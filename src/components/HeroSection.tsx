@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { ArrowRight, Users, Calendar, ChevronDown } from "lucide-react";
 
 const floatingIcons = [
@@ -10,16 +10,18 @@ const floatingIcons = [
   { icon: "🧠", x: "20%", y: "80%", delay: 1.2 },
 ];
 
-const containerVariants = {
+const EASE = "easeOut" as const;
+
+const containerVariants: Variants = {
   hidden: {},
   visible: {
     transition: { staggerChildren: 0.12, delayChildren: 0.2 },
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
 };
 
 export default function HeroSection() {
