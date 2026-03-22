@@ -1,8 +1,8 @@
-﻿# BTU Tech Hub Meetup - 19
+﻿# BTU Tech Hub Meetup - 20
 
 **BTU Tech Hub**
 
-**Sunday, March 22**  
+**Sunday, March 28**  
 **2:00 PM - 5:00 PM**  
 **IKMZ - BTU Cottbus-Senftenberg**  
 Cottbus, Brandenburg
@@ -19,7 +19,7 @@ Profile Complete · Reminder: SMS & Email
 
 ## About Event
 
-BTU Tech Hub: 19th Meetup
+BTU Tech Hub: 20th Meetup
 
 Connect Learn Build
 

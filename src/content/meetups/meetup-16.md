@@ -3,7 +3,7 @@
 **BTU Tech Hub**
 
 **Sunday, Mar 1, 2026**  
-**4:59 PM**  
+**2:00 PM**  
 **IKMZ - BTU Cottbus-Senftenberg**  
 Cottbus, Brandenburg
 
