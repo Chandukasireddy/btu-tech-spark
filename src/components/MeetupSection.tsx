@@ -137,12 +137,12 @@ function DigitBlock({ value, label }: { value: number; label: string }) {
   const str = String(value).padStart(2, "0");
   return (
     <div className="flex flex-col items-center gap-2">
-      <div className="countdown-digit w-16 h-16 md:w-20 md:h-20 flex items-center justify-center">
+      <div className="countdown-digit w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 flex items-center justify-center">
         <motion.span
           key={value}
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="font-mono text-2xl md:text-3xl font-bold text-cyber-blue tabular-nums"
+          className="font-mono text-xl sm:text-2xl md:text-3xl font-bold text-cyber-blue tabular-nums"
         >
           {str}
         </motion.span>
@@ -322,13 +322,13 @@ export default function MeetupSection() {
                   <div className="flex flex-col items-center gap-6 border border-cyber-blue/20 rounded-2xl bg-cyber-blue/5 p-6">
                     <p className="mono-tag text-muted-foreground">Current meetup starts in</p>
 
-                    <div className="flex items-center gap-3 md:gap-4">
+                    <div className="grid grid-cols-2 gap-4 md:flex md:items-center md:gap-4">
                       <DigitBlock value={countdown.days} label="Days" />
-                      <span className="text-2xl font-bold text-cyber-blue/40 mb-5 font-mono">:</span>
+                      <span className="hidden md:block text-2xl font-bold text-cyber-blue/40 mb-5 font-mono">:</span>
                       <DigitBlock value={countdown.hours} label="Hours" />
-                      <span className="text-2xl font-bold text-cyber-blue/40 mb-5 font-mono">:</span>
+                      <span className="hidden md:block text-2xl font-bold text-cyber-blue/40 mb-5 font-mono">:</span>
                       <DigitBlock value={countdown.minutes} label="Min" />
-                      <span className="text-2xl font-bold text-cyber-blue/40 mb-5 font-mono">:</span>
+                      <span className="hidden md:block text-2xl font-bold text-cyber-blue/40 mb-5 font-mono">:</span>
                       <DigitBlock value={countdown.seconds} label="Sec" />
                     </div>
                   </div>
