@@ -1,50 +1,26 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { Calendar, ChevronLeft, ChevronRight, Clock, ExternalLink, MapPin, Navigation } from "lucide-react";
 import { useCountdown } from "@/hooks/useCountdown";
 import { Button } from "@/components/ui/button";
-import meetup01Markdown from "@/content/meetups/meetup-01.md?raw";
-import meetup02Markdown from "@/content/meetups/meetup-02.md?raw";
-import meetup03Markdown from "@/content/meetups/meetup-03.md?raw";
-import meetup04Markdown from "@/content/meetups/meetup-04.md?raw";
-import meetup05Markdown from "@/content/meetups/meetup-05.md?raw";
-import meetup06Markdown from "@/content/meetups/meetup-06.md?raw";
-import meetup07Markdown from "@/content/meetups/meetup-07.md?raw";
-import meetup08Markdown from "@/content/meetups/meetup-08.md?raw";
-import meetup09Markdown from "@/content/meetups/meetup-09.md?raw";
-import meetup10Markdown from "@/content/meetups/meetup-10.md?raw";
-import meetup11Markdown from "@/content/meetups/meetup-11.md?raw";
-import meetup12Markdown from "@/content/meetups/meetup-12.md?raw";
-import meetup13Markdown from "@/content/meetups/meetup-13.md?raw";
-import meetup14Markdown from "@/content/meetups/meetup-14.md?raw";
-import meetup15Markdown from "@/content/meetups/meetup-15.md?raw";
-import meetup16Markdown from "@/content/meetups/meetup-16.md?raw";
-import meetup17Markdown from "@/content/meetups/meetup-17.md?raw";
-import meetup18Markdown from "@/content/meetups/meetup-18.md?raw";
-import meetup19Markdown from "@/content/meetups/meetup-19.md?raw";
 
-const meetupMarkdowns = [
-  meetup01Markdown,
-  meetup02Markdown,
-  meetup03Markdown,
-  meetup04Markdown,
-  meetup05Markdown,
-  meetup06Markdown,
-  meetup07Markdown,
-  meetup08Markdown,
-  meetup09Markdown,
-  meetup10Markdown,
-  meetup11Markdown,
-  meetup12Markdown,
-  meetup13Markdown,
-  meetup14Markdown,
-  meetup15Markdown,
-  meetup16Markdown,
-  meetup17Markdown,
-  meetup18Markdown,
-  meetup19Markdown,
-];
+// Dynamically load all markdown files from the meetups folder using Vite's glob
+const meetupModules = import.meta.glob<string>("/src/content/meetups/*.md", { query: "?raw", import: "default", eager: true });
+
+// Extract and sort meetup markdowns by numeric part (if exists) and preserve filenames
+const meetupMarkdowns = Object.entries(meetupModules)
+  .sort(([pathA], [pathB]) => {
+    // Extract numeric value from filename for sorting
+    const numA = parseInt(pathA.match(/(\d+)/)?.[1] || "0");
+    const numB = parseInt(pathB.match(/(\d+)/)?.[1] || "0");
+    return numB - numA; // Descending order (highest to lowest)
+  })
+  .map(([path, content]) => {
+    // Extract filename without path and without .md extension
+    const filename = path.split("/").pop()?.replace(".md", "") || "";
+    return { filename, content };
+  });
 
 function renderInlineMarkdown(text: string) {
   const parts = text.split(/(\*\*[^*]+\*\*|https?:\/\/\S+)/g).filter(Boolean);
@@ -178,31 +154,56 @@ function DigitBlock({ value, label }: { value: number; label: string }) {
 
 export default function MeetupSection() {
   const countdown = useCountdown();
-  const [selectedMeetupNumber, setSelectedMeetupNumber] = useState(19);
+  const [selectedMeetupIndex, setSelectedMeetupIndex] = useState(-1); // -1 means use default (latest)
 
   const meetups = useMemo(
     () =>
-      meetupMarkdowns.map((markdown, index) => ({
-        number: index + 1,
-        title: `BTU Tech Hub Meetup - ${index + 1}`,
-        markdown,
-        weekday: "Sunday",
-        time: "2:00 PM",
-        place: "IKMZ - BTU Cottbus-Senftenberg",
-      })),
+      meetupMarkdowns.map(({ filename, content }, index) => {
+        const numberMatch = filename.match(/(\d+)/);
+        const filenameNumber = numberMatch ? parseInt(numberMatch[1]) : 0;
+        return {
+          index,
+          filename,
+          filenameNumber,
+          title: `BTU Tech Hub Meetup - ${filename}`,
+          markdown: content,
+          weekday: "Sunday",
+          time: "2:00 PM",
+          place: "IKMZ - BTU Cottbus-Senftenberg",
+        };
+      }),
     [],
   );
 
-  const selectedMeetup = meetups.find((meetup) => meetup.number === selectedMeetupNumber) ?? meetups[meetups.length - 1];
-  const meetupSelectorItems = [...meetups].reverse();
+  // Find the meetup with the highest numeric value
+  const highestNumberedMeetup = useMemo(() => {
+    if (meetups.length === 0) return null;
+    return meetups.reduce((max, current) => 
+      current.filenameNumber > (max?.filenameNumber || 0) ? current : max
+    );
+  }, [meetups]);
+
+  // Set default index to highest numbered meetup on mount
+  useEffect(() => {
+    if (selectedMeetupIndex === -1 && highestNumberedMeetup) {
+      const indexOfHighest = meetups.findIndex(m => m.filenameNumber === highestNumberedMeetup.filenameNumber);
+      setSelectedMeetupIndex(indexOfHighest !== -1 ? indexOfHighest : 0);
+    }
+  }, [meetups, highestNumberedMeetup, selectedMeetupIndex]);
+
+  // Use highest numbered meetup if not manually selected
+  const defaultHighestIndex = highestNumberedMeetup ? meetups.findIndex(m => m.filenameNumber === highestNumberedMeetup.filenameNumber) : 0;
+  const displayIndex = selectedMeetupIndex === -1 ? defaultHighestIndex : selectedMeetupIndex;
+  const selectedMeetup = meetups[displayIndex] ?? meetups[0];
+  const meetupSelectorItems = meetups;
 
   const navigateMeetup = (direction: "prev" | "next") => {
     if (direction === "prev") {
-      setSelectedMeetupNumber((current) => Math.max(1, current - 1));
+      setSelectedMeetupIndex((current) => Math.max(0, current - 1));
       return;
     }
 
-    setSelectedMeetupNumber((current) => Math.min(meetups.length, current + 1));
+    setSelectedMeetupIndex((current) => Math.min(meetups.length - 1, current + 1));
   };
 
   return (
@@ -232,7 +233,7 @@ export default function MeetupSection() {
                     variant="outline"
                     size="sm"
                     onClick={() => navigateMeetup("prev")}
-                    disabled={selectedMeetupNumber === 1}
+                    disabled={displayIndex === 0}
                     className="bg-transparent"
                   >
                     <ChevronLeft className="w-4 h-4" />
@@ -243,7 +244,7 @@ export default function MeetupSection() {
                     variant="outline"
                     size="sm"
                     onClick={() => navigateMeetup("next")}
-                    disabled={selectedMeetupNumber === meetups.length}
+                    disabled={displayIndex === meetups.length - 1}
                     className="bg-transparent"
                   >
                     Next
@@ -256,16 +257,16 @@ export default function MeetupSection() {
                 <div className="flex gap-2 min-w-max pb-1">
                   {meetupSelectorItems.map((meetup) => (
                     <button
-                      key={meetup.number}
+                      key={meetup.index}
                       type="button"
-                      onClick={() => setSelectedMeetupNumber(meetup.number)}
+                      onClick={() => setSelectedMeetupIndex(meetup.index)}
                       className={`rounded-lg px-3 py-2 text-sm font-medium transition-all border ${
-                        selectedMeetupNumber === meetup.number
+                        displayIndex === meetup.index
                           ? "border-cyber-blue/60 bg-cyber-blue/10 text-cyber-blue"
                           : "border-white/10 bg-background/30 text-muted-foreground hover:text-foreground hover:border-white/20"
                       }`}
                     >
-                      Meetup {meetup.number}
+                      {meetup.filename}
                     </button>
                   ))}
                 </div>
@@ -283,9 +284,9 @@ export default function MeetupSection() {
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <span className="w-2 h-2 rounded-full bg-cyber-green animate-pulse" />
-                      <span className="mono-tag text-cyber-green">Meetup {selectedMeetup.number} of 19</span>
+                      <span className="mono-tag text-cyber-green">{selectedMeetup.filename}</span>
                     </div>
-                    <h3 className="text-2xl font-bold tracking-tight">{selectedMeetup.title}</h3>
+                    <h3 className="text-2xl font-bold tracking-tight">{selectedMeetup.filename}</h3>
                     <p className="text-muted-foreground mt-1 text-sm">Connect · Learn · Build · Review past sessions</p>
                   </div>
 
@@ -317,7 +318,7 @@ export default function MeetupSection() {
               </div>
 
               <div className="px-8 py-8 space-y-7">
-                {selectedMeetup.number === 19 && (
+                {selectedMeetup.filenameNumber === highestNumberedMeetup?.filenameNumber && (
                   <div className="flex flex-col items-center gap-6 border border-cyber-blue/20 rounded-2xl bg-cyber-blue/5 p-6">
                     <p className="mono-tag text-muted-foreground">Current meetup starts in</p>
 
