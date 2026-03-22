@@ -194,6 +194,7 @@ export default function MeetupSection() {
   );
 
   const selectedMeetup = meetups.find((meetup) => meetup.number === selectedMeetupNumber) ?? meetups[meetups.length - 1];
+  const meetupSelectorItems = [...meetups].reverse();
 
   const navigateMeetup = (direction: "prev" | "next") => {
     if (direction === "prev") {
@@ -253,7 +254,7 @@ export default function MeetupSection() {
 
               <div className="mt-4 overflow-x-auto">
                 <div className="flex gap-2 min-w-max pb-1">
-                  {meetups.map((meetup) => (
+                  {meetupSelectorItems.map((meetup) => (
                     <button
                       key={meetup.number}
                       type="button"
