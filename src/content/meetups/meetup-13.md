@@ -2,14 +2,14 @@
 
 **BTU Tech Hub**
 
-**Sunday, March 22**  
-**2:00 PM - 5:00 PM**  
+**Jan-Feb 2026**  
+**Time varied by session**  
 **IKMZ - BTU Cottbus-Senftenberg**  
 Cottbus, Brandenburg
 
-**Starting in 48:25**
+**Archive Overview**
 
-**You’re In**
+**You're In**
 
 - My Ticket
 - Invite a Friend
@@ -23,10 +23,10 @@ BTU Tech Hub: 13th Meetup
 
 Connect Learn Build
 
-Join us to meet fellow tech students, share knowledge, and boost your career!
+**Focus:** Advanced Agentic Development
 
-Talk on Technology, LLMs, AI new tools, Tech news, get project contributors, start new projects & also exam preparation.  
-Teach/Learn/Grow/Contribute/Study
+**Overview:** Focused on improving robustness, tooling, and reproducible agent workflows.
+Series theme: exploration of local LLM hosting with Ollama.
 
 BTU IKMZ Library Basement -1 floor cabins
 
@@ -50,4 +50,3 @@ Tech Meet-up
 ## Hosted By
 
 Chandrakiran Reddy Kasireddy
-

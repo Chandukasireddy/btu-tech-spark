@@ -2,14 +2,14 @@
 
 **BTU Tech Hub**
 
-**Sunday, March 22**  
-**2:00 PM - 5:00 PM**  
+**Sunday, Mar 1, 2026**  
+**4:59 PM**  
 **IKMZ - BTU Cottbus-Senftenberg**  
 Cottbus, Brandenburg
 
-**Starting in 48:25**
+**Archive Overview**
 
-**You’re In**
+**You're In**
 
 - My Ticket
 - Invite a Friend
@@ -23,11 +23,9 @@ BTU Tech Hub: 16th Meetup
 
 Connect Learn Build
 
-Join us to meet fellow tech students, share knowledge, and boost your career!
+**Focus:** n8n and Low-Code Agents
 
-Talk on Technology, LLMs, AI new tools, Tech news, get project contributors, start new projects & also exam preparation.  
-Teach/Learn/Grow/Contribute/Study
-
+**Overview:** Built visual agentic workflows using n8n with practical automation examples.
 BTU IKMZ Library Basement -1 floor cabins
 
 Instructions to location: https://btu.mapongo.de/viewer?p=1&b=1&f=13&l=349&lang=en
@@ -50,4 +48,3 @@ Tech Meet-up
 ## Hosted By
 
 Chandrakiran Reddy Kasireddy
-
