@@ -2,14 +2,14 @@
 
 **BTU Tech Hub**
 
-**Sunday, March 22**  
-**2:00 PM - 5:00 PM**  
+**Wednesday, Oct 15, 2025**  
+**8:00 PM**  
 **IKMZ - BTU Cottbus-Senftenberg**  
 Cottbus, Brandenburg
 
-**Starting in 48:25**
+**Archive Overview**
 
-**You’re In**
+**You're In**
 
 - My Ticket
 - Invite a Friend
@@ -23,10 +23,10 @@ BTU Tech Hub: 1st Meetup
 
 Connect Learn Build
 
-Join us to meet fellow tech students, share knowledge, and boost your career!
+**Focus:** Networking and Community Building
 
-Talk on Technology, LLMs, AI new tools, Tech news, get project contributors, start new projects & also exam preparation.  
-Teach/Learn/Grow/Contribute/Study
+**Overview:** Kickoff meetup focused on building the BTU Tech Hub community and connecting students.
+Venue note: Initial session held on IKMZ 7th Floor.
 
 BTU IKMZ Library Basement -1 floor cabins
 
@@ -50,4 +50,3 @@ Tech Meet-up
 ## Hosted By
 
 Chandrakiran Reddy Kasireddy
-

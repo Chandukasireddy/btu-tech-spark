@@ -2,14 +2,14 @@
 
 **BTU Tech Hub**
 
-**Sunday, March 22**  
-**2:00 PM - 5:00 PM**  
+**Sunday, Mar 8, 2026**  
+**1:52 PM**  
 **IKMZ - BTU Cottbus-Senftenberg**  
 Cottbus, Brandenburg
 
-**Starting in 48:25**
+**Archive Overview**
 
-**You’re In**
+**You're In**
 
 - My Ticket
 - Invite a Friend
@@ -23,11 +23,9 @@ BTU Tech Hub: 17th Meetup
 
 Connect Learn Build
 
-Join us to meet fellow tech students, share knowledge, and boost your career!
+**Focus:** Deep Learning and Scholarships
 
-Talk on Technology, LLMs, AI new tools, Tech news, get project contributors, start new projects & also exam preparation.  
-Teach/Learn/Grow/Contribute/Study
-
+**Overview:** Discussed LeakyReLU, Snowflake Cortex, and BTU STEM Womens scholarship opportunities.
 BTU IKMZ Library Basement -1 floor cabins
 
 Instructions to location: https://btu.mapongo.de/viewer?p=1&b=1&f=13&l=349&lang=en
@@ -50,4 +48,3 @@ Tech Meet-up
 ## Hosted By
 
 Chandrakiran Reddy Kasireddy
-

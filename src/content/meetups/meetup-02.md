@@ -2,14 +2,14 @@
 
 **BTU Tech Hub**
 
-**Sunday, March 22**  
-**2:00 PM - 5:00 PM**  
+**Saturday, Oct 25, 2025**  
+**10:00 AM**  
 **IKMZ - BTU Cottbus-Senftenberg**  
 Cottbus, Brandenburg
 
-**Starting in 48:25**
+**Archive Overview**
 
-**You’re In**
+**You're In**
 
 - My Ticket
 - Invite a Friend
@@ -23,10 +23,10 @@ BTU Tech Hub: 2nd Meetup
 
 Connect Learn Build
 
-Join us to meet fellow tech students, share knowledge, and boost your career!
+**Focus:** Intro to Retrieval-Augmented Generation (RAG)
 
-Talk on Technology, LLMs, AI new tools, Tech news, get project contributors, start new projects & also exam preparation.  
-Teach/Learn/Grow/Contribute/Study
+**Overview:** Deep dive into RAG architecture, components, and practical usage patterns.
+Venue shifted to IKMZ Basement (-1) cabins for the technical deep-dive.
 
 BTU IKMZ Library Basement -1 floor cabins
 
@@ -50,4 +50,3 @@ Tech Meet-up
 ## Hosted By
 
 Chandrakiran Reddy Kasireddy
-
