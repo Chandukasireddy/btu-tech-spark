@@ -2,7 +2,7 @@
 
 **BTU Tech Hub**
 
-**Tuesday, Nov 4, 2025**  
+**Tuesday, Nov 4, 2025** (Estimated) 
 **Time not specified**  
 **IKMZ - BTU Cottbus-Senftenberg**  
 Cottbus, Brandenburg
@@ -45,6 +45,4 @@ https://btu.mapongo.de/viewer?p=1&b=1&f=13&l=349&lang=en
 **BTU Tech Hub**  
 Tech Meet-up
 
-## Hosted By
 
-Chandrakiran Reddy Kasireddy
