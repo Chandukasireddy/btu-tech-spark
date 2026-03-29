@@ -134,7 +134,7 @@ export default function HeroSection() {
           className="flex flex-wrap items-center justify-center gap-8 mt-6 text-sm text-muted-foreground"
         >
           {[
-            { icon: <Users className="w-4 h-4 text-cyber-blue" />, label: "Active Members", value: "50+" },
+            { icon: <Users className="w-4 h-4 text-cyber-blue" />, label: "Members", value: "50+" },
             { icon: <Calendar className="w-4 h-4 text-cyber-purple" />, label: "Meetups Held", value: "20" },
             { icon: <span className="text-cyber-green text-base">🔥</span>, label: "Weekly Sundays", value: "14:00" },
           ].map((stat, i) => (
