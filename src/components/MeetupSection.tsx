@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 
 // Dynamically load all markdown files from the meetups folder using Vite's glob
 const meetupModules = import.meta.glob<string>("/src/content/meetups/*.md", { query: "?raw", import: "default", eager: true });
+const meetupImageModules = import.meta.glob("/src/content/images-meetup/*", { query: "?url", import: "default", eager: true });
 
 // Extract and sort meetup markdowns by numeric part (if exists) and preserve filenames
 const meetupMarkdowns = Object.entries(meetupModules)
@@ -21,6 +22,28 @@ const meetupMarkdowns = Object.entries(meetupModules)
     const filename = path.split("/").pop()?.replace(".md", "") || "";
     return { filename, content };
   });
+
+function resolveMarkdownImageSrc(src: string) {
+  const normalized = src.replace(/\\/g, "/").trim();
+
+  // Keep absolute URLs and data URLs untouched.
+  if (/^(https?:)?\/\//.test(normalized) || normalized.startsWith("data:")) {
+    return normalized;
+  }
+
+  const srcKey = normalized.startsWith("/src/") ? normalized : `/${normalized.replace(/^\/+/, "")}`;
+  const resolved = meetupImageModules[srcKey];
+
+  if (typeof resolved === "string") {
+    return resolved;
+  }
+
+  if (resolved && typeof resolved === "object" && "default" in resolved && typeof resolved.default === "string") {
+    return resolved.default;
+  }
+
+  return normalized;
+}
 
 function renderInlineMarkdown(text: string) {
   const parts = text.split(/(\*\*[^*]+\*\*|https?:\/\/\S+)/g).filter(Boolean);
@@ -56,6 +79,7 @@ function renderMeetupMarkdown(markdown: string) {
   const lines = markdown.split(/\r?\n/);
   const elements: React.ReactNode[] = [];
   let listBuffer: string[] = [];
+  const markdownImageLineRegex = /^!\[([^\]]*)\]\(([^)]+)\)$/;
 
   const flushList = () => {
     if (listBuffer.length === 0) {
@@ -102,6 +126,23 @@ function renderMeetupMarkdown(markdown: string) {
         <h5 key={`h2-${elements.length}`} className="text-lg font-semibold mt-7 mb-3 text-cyber-blue">
           {renderInlineMarkdown(trimmedLine.slice(3))}
         </h5>,
+      );
+      return;
+    }
+
+    const imageMatch = trimmedLine.match(markdownImageLineRegex);
+    if (imageMatch) {
+      const [, alt, src] = imageMatch;
+      const resolvedSrc = resolveMarkdownImageSrc(src);
+      elements.push(
+        <div key={`img-${elements.length}`} className="mb-5 overflow-hidden rounded-xl border border-white/10 bg-background/30">
+          <img
+            src={resolvedSrc}
+            alt={alt || "Meetup banner"}
+            loading="lazy"
+            className="block h-auto w-full object-cover"
+          />
+        </div>,
       );
       return;
     }

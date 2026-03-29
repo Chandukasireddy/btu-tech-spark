@@ -1,5 +1,7 @@
 ﻿# BTU Tech Hub Meetup - 20
 
+![BTU Tech Hub Meetup 20 Banner](/src/content/images-meetup/meet-up-20.png)
+
 **BTU Tech Hub**
 
 **Sunday, March 28**  
