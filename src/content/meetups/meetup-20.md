@@ -23,16 +23,19 @@ BTU Tech Hub: 20th Meetup
 
 Connect Learn Build
 
-Join us to meet fellow tech students, share knowledge, and boost your career!
+This meetup was fully dedicated to visual tech work and hands-on dashboard building.
 
-Talk on Technology, LLMs, AI new tools, Tech news, get project contributors, start new projects & also exam preparation.  
-Teach/Learn/Grow/Contribute/Study
+Sunday at 2:00 PM, we worked on combining multiple data sources to design different types of KPIs and data stories. We focused on often under-rated but high-impact parts of technology that data analysts and builders face every day: token consumption, heavy GPU usage, rapidly growing data points, deep customization requirements, and interactive user expectations.
 
-BTU IKMZ Library Basement -1 floor cabins
+Today's goal was to explore as many tools and formats as possible for clear communication through data: creative dashboards, interactive dashboards, KPI views, charts, plots, and more.
+
+This session marks one of the most significant project directions on deciosn making, built in an enjoyable and exciting way for everyone grtting involved.
+
+BTU IKMZ Library Basement '-1' floor cabins
 
 Instructions to location: https://btu.mapongo.de/viewer?p=1&b=1&f=13&l=349&lang=en
 
-Join Discord for updates: https://discord.gg/A6DJSsntT
+Join Discord for updates: https://discord.gg/NfPSxZKUa8
 
 Note: The meetup happens on every Sunday 2PM at IKMZ Cottbus (any changes will be discussed on discord)
 
@@ -42,10 +45,6 @@ Note: The meetup happens on every Sunday 2PM at IKMZ Cottbus (any changes will b
 Platz der Deutsche Einheit 2, 03044 Cottbus, Germany  
 https://btu.mapongo.de/viewer?p=1&b=1&f=13&l=349&lang=en
 
-## Presented by
-
-**BTU Tech Hub**  
-Tech Meet-up
 
 ## Hosted By
 
