@@ -1,23 +1,17 @@
 # BTU Tech Hub Meetup - 21
 
-![BTU Tech Hub Meetup 21 Banner](/src/content/images-meetup/meet-up-20.png)
+![BTU Tech Hub Meetup 21 Banner](/src/content/images-meetup/meet-up-21.png)
 
 **BTU Tech Hub**
 
-**Sunday, April 19**  
-**2:00 PM - 5:00 PM**  
-**IKMZ - BTU Cottbus-Senftenberg**  
-Cottbus, Brandenburg
+**Sunday, April 19** **2:00 PM - 5:00 PM** **IKMZ - BTU Cottbus-Senftenberg** Cottbus, Brandenburg
 
-**Starting in 48:25**
+**Event Completed**
 
-**You’re In**
+**Attendees**
 
-- My Ticket
-- Invite a Friend
-
-No longer able to attend? Notify the host by canceling your registration.  
-Profile Complete · Reminder: SMS & Email
+- Participant List
+- Shared Resources
 
 ## About Event
 
@@ -25,13 +19,25 @@ BTU Tech Hub: 21st Meetup
 
 Connect Learn Build
 
-This meetup was fully dedicated to visual tech work and hands-on dashboard building.
+This meetup was a deep dive into the world of Large Language Models (LLMs), focusing specifically on the art and science of **Fine-Tuning**. 
 
-Sunday at 2:00 PM, we worked on combining multiple data sources to design different types of KPIs and data stories. We focused on often under-rated but high-impact parts of technology that data analysts and builders face every day: token consumption, heavy GPU usage, rapidly growing data points, deep customization requirements, and interactive user expectations.
+Today, we moved beyond just using models to actually training them. The session was a hands-on workshop where we explored the efficiency of **Unsloth** in Google Colab to accelerate our training workflows. We took small "contest" models and specialized them by training on specific datasets sourced from **Hugging Face**.
 
-Today's goal was to explore as many tools and formats as possible for clear communication through data: creative dashboards, interactive dashboards, KPI views, charts, plots, and more.
+**Key Highlights of the Session:**
+- **Unsloth Integration:** Learning how to use Unsloth to make fine-tuning 2x faster and use 70% less memory.
+- **Hugging Face Ecosystem:** Navigating datasets and preparing data for supervised fine-tuning (SFT).
+- **Colab Workflows:** Setting up environments, managing GPU VRAM, and monitoring training loss.
+- **Model Specialization:** Understanding how a base model transforms when trained on domain-specific data.
 
-This session marks one of the most significant project directions on deciosn making, built in an enjoyable and exciting way for everyone grtting involved.
+It was a fantastic experience seeing the community get their hands "dirty" with weights and biases, moving closer to building custom AI solutions tailored to specific needs.
+
+## Presentations by Participants
+
+Beyond the hands-on fine-tuning, our members shared valuable insights through specialized presentations:
+
+* **Cloud Design & AI Integration:** A deep dive into **Google Stitch and Variant**, exploring the design frame and the latest tools for integrating AI into design workflows.
+* **Security Vulnerability Scans with LLMs:** An exploration of using LLMs to detect security flaws. This session focused on performing scans within a **sandbox environment**, ensuring safety while leveraging the reasoning power of AI for cybersecurity.
+* **BTU Startup Ecosystem:** We held an engaging discussion regarding the **BTU Startup Hub** and the growing startup ecosystem at BTU, discussing opportunities for tech-driven entrepreneurship.
 
 BTU IKMZ Library Basement '-1' floor cabins
 
@@ -43,8 +49,7 @@ Note: The meetup happens on every Sunday 2PM at IKMZ Cottbus (any changes will b
 
 ## Location
 
-**IKMZ - BTU Cottbus-Senftenberg**  
-Platz der Deutsche Einheit 2, 03044 Cottbus, Germany  
+**IKMZ - BTU Cottbus-Senftenberg** Platz der Deutsche Einheit 2, 03044 Cottbus, Germany  
 https://btu.mapongo.de/viewer?p=1&b=1&f=13&l=349&lang=en
 
 
