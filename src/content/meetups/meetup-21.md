@@ -35,7 +35,7 @@ It was a fantastic experience seeing the community get their hands "dirty" with 
 
 Beyond the hands-on fine-tuning, our members shared valuable insights through specialized presentations:
 
-* **Cloud Design & AI Integration:** A deep dive into **Google Stitch and Variant**, exploring the design frame and the latest tools for integrating AI into design workflows.
+* **Claude Design & AI Integration:** A deep dive into **Google Stitch and Variant**, exploring the design frame and the latest tools for integrating AI into design workflows.
 * **Security Vulnerability Scans with LLMs:** An exploration of using LLMs to detect security flaws. This session focused on performing scans within a **sandbox environment**, ensuring safety while leveraging the reasoning power of AI for cybersecurity.
 * **BTU Startup Ecosystem:** We held an engaging discussion regarding the **BTU Startup Hub** and the growing startup ecosystem at BTU, discussing opportunities for tech-driven entrepreneurship.
 
