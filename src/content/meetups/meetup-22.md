@@ -4,7 +4,7 @@
 
 **BTU Tech Hub**
 
-**Sunday, May 02** **2:00 PM - 5:00 PM** **IKMZ - BTU Cottbus-Senftenberg** Cottbus, Brandenburg
+**Sunday, May 02** ,  **2:00 PM - 5:00 PM** **IKMZ - BTU Cottbus-Senftenberg** Cottbus, Brandenburg
 
 **Upcoming Event**
 
