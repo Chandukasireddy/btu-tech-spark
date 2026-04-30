@@ -239,7 +239,7 @@ export default function PhotosSection() {
 
     Object.entries(meetupThumbModules).forEach(([path, url]) => {
       const parts = path.split("/");
-      const folderName = parts[parts.length - 2];
+      const folderName = parts[parts.length - 3];
       const filename = parts[parts.length - 1];
       const numberMatch = folderName.match(/(\d+)/);
       const meetupNumber = numberMatch ? parseInt(numberMatch[1]) : 0;
