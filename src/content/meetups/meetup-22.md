@@ -4,7 +4,7 @@
 
 **BTU Tech Hub**
 
-**Sunday, April 26** **2:00 PM - 5:00 PM** **IKMZ - BTU Cottbus-Senftenberg** Cottbus, Brandenburg
+**Sunday, May 02** ,  **2:00 PM - 5:00 PM** **IKMZ - BTU Cottbus-Senftenberg** Cottbus, Brandenburg
 
 **Upcoming Event**
 
@@ -46,3 +46,5 @@ We are back for our 22nd session! While we are finalizing the core technical wor
 ## Hosted By
 
 **Chandrakiran Reddy Kasireddy**
+**Rahul Oruganti**
+**Fharook shaik**
