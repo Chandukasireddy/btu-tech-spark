@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 // Dynamically load all markdown files from the meetups folder using Vite's glob
 const meetupModules = import.meta.glob<string>("/src/content/meetups/*.md", { query: "?raw", import: "default", eager: true });
-const meetupImageModules = import.meta.glob("/src/content/images-meetup/*", { query: "?url", import: "default", eager: true });
+const meetupBannerModules = import.meta.glob("/src/content/images-meetup/banners/*", { query: "?url", import: "default", eager: true });
 
 // Extract and sort meetup markdowns by numeric part (if exists) and preserve filenames
 const meetupMarkdowns = Object.entries(meetupModules)
@@ -32,7 +32,11 @@ function resolveMarkdownImageSrc(src: string) {
   }
 
   const srcKey = normalized.startsWith("/src/") ? normalized : `/${normalized.replace(/^\/+/, "")}`;
-  const resolved = meetupImageModules[srcKey];
+  const bannerKey = srcKey.replace(
+    "/src/content/images-meetup/",
+    "/src/content/images-meetup/banners/"
+  ).replace(/\.(jpe?g|png|webp)$/i, "-banner.jpg");
+  const resolved = meetupBannerModules[bannerKey];
 
   if (typeof resolved === "string") {
     return resolved;

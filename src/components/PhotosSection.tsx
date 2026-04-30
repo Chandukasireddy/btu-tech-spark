@@ -3,24 +3,11 @@ import { useInView } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { X } from "lucide-react";
 
-// Dynamically load image URLs only when a card needs them.
-const meetupImageModules = import.meta.glob("/src/content/images-meetup/meetup-*/[^/]*", {
-  query: "?url",
-  import: "default",
-  eager: false,
-});
-
-// Thumbnails and medium images are generated into `thumbs/` and `medium/` per meetup and can be eagerly imported (small/medium files)
+// Thumbnails are generated into `thumbs/` per meetup and are the only image size we ship to the gallery.
 const meetupThumbModules = import.meta.glob(
   "/src/content/images-meetup/meetup-*/thumbs/[^/]*",
   { query: "?url", import: "default", eager: true }
 );
-const meetupMediumModules = import.meta.glob(
-  "/src/content/images-meetup/meetup-*/medium/[^/]*",
-  { query: "?url", import: "default", eager: true }
-);
-
-type ImageLoader = () => Promise<string | { default: string }>;
 
 function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const ref = useRef(null);
@@ -41,27 +28,7 @@ interface Photo {
   key: string;
   filename: string;
   meetupNumber: number;
-  loadUrl: ImageLoader;
   thumbUrl?: string | null;
-  mediumUrl?: string | null;
-}
-
-const resolvedPhotoUrlCache = new Map<string, string>();
-
-async function resolvePhotoUrl(photo: Photo) {
-  const cachedUrl = resolvedPhotoUrlCache.get(photo.key);
-  if (cachedUrl) return cachedUrl;
-
-  // prefer mediumUrl if available (eagerly bundled, smaller than originals)
-  if (photo.mediumUrl) {
-    resolvedPhotoUrlCache.set(photo.key, photo.mediumUrl);
-    return photo.mediumUrl;
-  }
-
-  const result = await photo.loadUrl();
-  const url = typeof result === "string" ? result : (result as any).default;
-  resolvedPhotoUrlCache.set(photo.key, url);
-  return url;
 }
 
 // Skeleton placeholder component
@@ -89,8 +56,6 @@ function ImageModal({
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    let cancelled = false;
-
     if (!photo) {
       setPhotoUrl(null);
       setIsLoading(true);
@@ -98,20 +63,12 @@ function ImageModal({
     }
 
     setIsLoading(true);
-    setPhotoUrl(null);
-
-    resolvePhotoUrl(photo)
-      .then((url) => {
-        if (!cancelled) setPhotoUrl(url);
-      })
-      .catch(() => {
-        if (!cancelled) setIsLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
+    setPhotoUrl(photo.thumbUrl ?? null);
   }, [photo]);
+
+  useEffect(() => {
+    if (photoUrl) setIsLoading(false);
+  }, [photoUrl]);
 
   if (!photo) return null;
 
@@ -181,31 +138,14 @@ function PhotoItem({
   const isMedium = photoIndex % 3 === 2;
 
   useEffect(() => {
-    let cancelled = false;
-
     if (photoUrl) return;
-
-    // For grid, don't fetch full/medium images preemptively — use thumbnail if available.
-    if (photo.thumbUrl) {
-      setPhotoUrl(photo.thumbUrl);
-      return;
-    }
 
     if (!isInView) return;
 
-    // fallback: resolve a URL lazily if no thumbnail exists
-    resolvePhotoUrl(photo)
-      .then((url) => {
-        if (!cancelled) setPhotoUrl(url);
-      })
-      .catch(() => {
-        if (!cancelled) setIsLoaded(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [isInView, photo, photoUrl]);
+    if (photo.thumbUrl) {
+      setPhotoUrl(photo.thumbUrl);
+    }
+  }, [isInView, photo.thumbUrl, photoUrl]);
 
   return (
     <motion.div
@@ -225,14 +165,14 @@ function PhotoItem({
         {/* Skeleton placeholder */}
         {!isLoaded && <SkeletonLoader />}
 
-        {/* Actual image: prefer resolved full `photoUrl`, fall back to generated thumbnail `photo.thumbUrl` */}
+        {/* Actual image uses the generated thumbnail only. */}
         <img
           ref={imgRef}
           src={photoUrl ?? photo.thumbUrl ?? undefined}
           alt={`${photo.filename}`}
           loading="lazy"
           onLoad={() => setIsLoaded(true)}
-          className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 will-change-transform ${
+          className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 will-change-transform ${
             isLoaded ? "opacity-100" : "opacity-0"
           }`}
           decoding="async"
@@ -297,43 +237,23 @@ export default function PhotosSection() {
   const photosByMeetup = useMemo(() => {
     const grouped: Record<number, Photo[]> = {};
 
-    Object.entries(meetupImageModules).forEach(([path, url]) => {
+    Object.entries(meetupThumbModules).forEach(([path, url]) => {
       const parts = path.split("/");
       const folderName = parts[parts.length - 2];
       const filename = parts[parts.length - 1];
       const numberMatch = folderName.match(/(\d+)/);
       const meetupNumber = numberMatch ? parseInt(numberMatch[1]) : 0;
-      const loadUrl = url as ImageLoader;
-
       if (!grouped[meetupNumber]) {
         grouped[meetupNumber] = [];
       }
 
-      // compute expected thumb path produced by our thumbnail generator
-      const baseName = filename.replace(/\.[^/.]+$/, "");
-      const thumbPath = `/src/content/images-meetup/${folderName}/thumbs/${baseName}-thumb.jpg`;
-      const thumbEntry = (meetupThumbModules as Record<string, string | { default: string }>)[thumbPath];
-      const thumbUrl = thumbEntry
-        ? typeof thumbEntry === "string"
-          ? (thumbEntry as string)
-          : (thumbEntry as any).default
-        : null;
-      // medium size generated by our script
-      const mediumPath = `/src/content/images-meetup/${folderName}/medium/${baseName}-medium.jpg`;
-      const mediumEntry = (meetupMediumModules as Record<string, string | { default: string }>)[mediumPath];
-      const mediumUrl = mediumEntry
-        ? typeof mediumEntry === "string"
-          ? (mediumEntry as string)
-          : (mediumEntry as any).default
-        : null;
+      const thumbUrl = typeof url === "string" ? url : (url as any).default;
 
       grouped[meetupNumber].push({
         key: path,
         filename,
-        loadUrl,
         meetupNumber,
         thumbUrl,
-        mediumUrl,
       });
     });
 

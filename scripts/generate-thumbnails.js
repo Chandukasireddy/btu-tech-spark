@@ -6,6 +6,37 @@ import sharp from 'sharp';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const IMAGES_DIR = path.join(__dirname, '..', 'src', 'content', 'images-meetup');
 
+async function ensureBannerVariants() {
+  const entries = await fs.readdir(IMAGES_DIR, { withFileTypes: true });
+  const bannerDir = path.join(IMAGES_DIR, 'banners');
+  await fs.mkdir(bannerDir, { recursive: true });
+
+  for (const entry of entries) {
+    if (!entry.isFile() || !/\.(jpe?g|png|webp)$/i.test(entry.name)) {
+      continue;
+    }
+
+    const inPath = path.join(IMAGES_DIR, entry.name);
+    const baseOut = entry.name.replace(/\.(jpe?g|png|webp)$/i, '');
+    const outPath = path.join(bannerDir, `${baseOut}-banner.jpg`);
+
+    try {
+      const [sOut, sIn] = await Promise.all([
+        fs.stat(outPath).catch(() => null),
+        fs.stat(inPath),
+      ]);
+      if (sOut && sOut.mtimeMs >= sIn.mtimeMs) {
+        continue;
+      }
+
+      await sharp(inPath).resize({ width: 1400, withoutEnlargement: true }).jpeg({ quality: 78 }).toFile(outPath);
+      console.log('Generated', outPath);
+    } catch (err) {
+      console.error('Banner error for', inPath, err.message);
+    }
+  }
+}
+
 async function walk(dir) {
   const entries = await fs.readdir(dir, { withFileTypes: true });
   for (const entry of entries) {
@@ -23,29 +54,18 @@ async function walk(dir) {
           const baseOut = file.replace(/\.(jpe?g|png|webp)$/i, '');
           const outThumb = baseOut + '-thumb.jpg';
           const outThumbPath = path.join(thumbsDir, outThumb);
-          const mediumDir = path.join(full, 'medium');
-          await fs.mkdir(mediumDir, { recursive: true });
-          const outMedium = baseOut + '-medium.jpg';
-          const outMediumPath = path.join(mediumDir, outMedium);
           try {
             let skipThumb = false;
-            let skipMedium = false;
             try {
-              const [sThumb, sMedium, sIn] = await Promise.all([
+              const [sThumb, sIn] = await Promise.all([
                 fs.stat(outThumbPath).catch(() => null),
-                fs.stat(outMediumPath).catch(() => null),
                 fs.stat(inPath),
               ]);
               if (sThumb && sThumb.mtimeMs >= sIn.mtimeMs) skipThumb = true;
-              if (sMedium && sMedium.mtimeMs >= sIn.mtimeMs) skipMedium = true;
             } catch {}
             if (!skipThumb) {
-              await sharp(inPath).resize({ width: 640 }).jpeg({ quality: 70 }).toFile(outThumbPath);
+              await sharp(inPath).resize({ width: 320 }).jpeg({ quality: 68 }).toFile(outThumbPath);
               console.log('Generated', outThumbPath);
-            }
-            if (!skipMedium) {
-              await sharp(inPath).resize({ width: 1600 }).jpeg({ quality: 82 }).toFile(outMediumPath);
-              console.log('Generated', outMediumPath);
             }
           } catch (err) {
             console.error('Thumb error for', inPath, err.message);
@@ -58,7 +78,12 @@ async function walk(dir) {
   }
 }
 
-walk(IMAGES_DIR).catch((err) => {
+async function main() {
+  await ensureBannerVariants();
+  await walk(IMAGES_DIR);
+}
+
+main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
