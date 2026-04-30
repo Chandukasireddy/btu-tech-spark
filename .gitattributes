@@ -1,2 +1,0 @@
-# Track meetup images with Git LFS
-src/content/images-meetup/** filter=lfs diff=lfs merge=lfs -text
