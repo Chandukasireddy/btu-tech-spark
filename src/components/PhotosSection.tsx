@@ -1,14 +1,15 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { X } from "lucide-react";
 
-// Dynamically load all images from meetup folders
+// Dynamically load image URLs only when a card needs them.
 const meetupImageModules = import.meta.glob("/src/content/images-meetup/meetup-*/[^/]*", {
   query: "?url",
   import: "default",
-  eager: true,
 });
+
+type ImageLoader = () => Promise<string | { default: string }>;
 
 function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const ref = useRef(null);
@@ -26,9 +27,22 @@ function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
 }
 
 interface Photo {
+  key: string;
   filename: string;
-  url: string;
   meetupNumber: number;
+  loadUrl: ImageLoader;
+}
+
+const resolvedPhotoUrlCache = new Map<string, string>();
+
+async function resolvePhotoUrl(photo: Photo) {
+  const cachedUrl = resolvedPhotoUrlCache.get(photo.key);
+  if (cachedUrl) return cachedUrl;
+
+  const result = await photo.loadUrl();
+  const url = typeof result === "string" ? result : result.default;
+  resolvedPhotoUrlCache.set(photo.key, url);
+  return url;
 }
 
 // Skeleton placeholder component
@@ -53,12 +67,38 @@ function ImageModal({
   onClose: () => void;
 }) {
   const [isLoading, setIsLoading] = useState(true);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!photo) {
+      setPhotoUrl(null);
+      setIsLoading(true);
+      return;
+    }
+
+    setIsLoading(true);
+    setPhotoUrl(null);
+
+    resolvePhotoUrl(photo)
+      .then((url) => {
+        if (!cancelled) setPhotoUrl(url);
+      })
+      .catch(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [photo]);
 
   if (!photo) return null;
 
   return (
     <AnimatePresence>
-      {photo && (
+      {photo && photoUrl && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -79,7 +119,7 @@ function ImageModal({
               </div>
             )}
             <img
-              src={photo.url}
+              src={photoUrl}
               alt={photo.filename}
               onLoad={() => setIsLoading(false)}
               className="w-full h-full object-contain rounded-xl"
@@ -103,25 +143,45 @@ function ImageModal({
 
 interface PhotoItemProps {
   photo: Photo;
-  meetupNumber: number;
   photoIndex: number;
   onPhotoClick: (photo: Photo) => void;
 }
 
 function PhotoItem({
   photo,
-  meetupNumber,
   photoIndex,
   onPhotoClick,
 }: PhotoItemProps) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const imgRef = useRef<HTMLImageElement>(null);
+  const itemRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(itemRef, { once: true, margin: "200px" });
 
   const isLarge = photoIndex % 5 === 4 || photoIndex % 8 === 0;
   const isMedium = photoIndex % 3 === 2;
 
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!isInView || photoUrl) return;
+
+    resolvePhotoUrl(photo)
+      .then((url) => {
+        if (!cancelled) setPhotoUrl(url);
+      })
+      .catch(() => {
+        if (!cancelled) setIsLoaded(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isInView, photo, photoUrl]);
+
   return (
     <motion.div
+      ref={itemRef}
       initial={{ opacity: 0, scale: 0.9 }}
       whileInView={{ opacity: 1, scale: 1 }}
       transition={{
@@ -138,17 +198,19 @@ function PhotoItem({
         {!isLoaded && <SkeletonLoader />}
 
         {/* Actual image */}
-        <img
-          ref={imgRef}
-          src={photo.url}
-          alt={`${photo.filename}`}
-          loading="lazy"
-          onLoad={() => setIsLoaded(true)}
-          className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 will-change-transform ${
-            isLoaded ? "opacity-100" : "opacity-0"
-          }`}
-          decoding="async"
-        />
+        {photoUrl && (
+          <img
+            ref={imgRef}
+            src={photoUrl}
+            alt={`${photo.filename}`}
+            loading="lazy"
+            onLoad={() => setIsLoaded(true)}
+            className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 will-change-transform ${
+              isLoaded ? "opacity-100" : "opacity-0"
+            }`}
+            decoding="async"
+          />
+        )}
 
         {/* Info overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
@@ -190,9 +252,8 @@ function PhotoGrid({
       >
         {photos.map((photo, photoIndex) => (
           <PhotoItem
-            key={`${meetupNumber}-${photo.filename}`}
+            key={photo.key}
             photo={photo}
-            meetupNumber={meetupNumber}
             photoIndex={photoIndex}
             onPhotoClick={setSelectedPhoto}
           />
@@ -204,7 +265,7 @@ function PhotoGrid({
 }
 
 export default function PhotosSection() {
-  const [loadedMeetupsCount, setLoadedMeetupsCount] = useState(3); // Initially load 3 meetups
+  const [loadedMeetupsCount, setLoadedMeetupsCount] = useState(1); // Keep the first paint small
 
   // Extract and group images by meetup number
   const photosByMeetup = useMemo(() => {
@@ -216,15 +277,17 @@ export default function PhotosSection() {
       const filename = parts[parts.length - 1];
       const numberMatch = folderName.match(/(\d+)/);
       const meetupNumber = numberMatch ? parseInt(numberMatch[1]) : 0;
+      const loadUrl = url as ImageLoader;
 
       if (!grouped[meetupNumber]) {
         grouped[meetupNumber] = [];
       }
 
       grouped[meetupNumber].push({
+        key: path,
         filename,
-        url: typeof url === "string" ? url : (url as any).default,
         meetupNumber,
+        loadUrl,
       });
     });
 
