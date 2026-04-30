@@ -20,17 +20,33 @@ async function walk(dir) {
 
         for (const file of imgFiles) {
           const inPath = path.join(full, file);
-          const outName = file.replace(/\.(jpe?g|png|webp)$/i, '') + '-thumb.jpg';
-          const outPath = path.join(thumbsDir, outName);
+          const baseOut = file.replace(/\.(jpe?g|png|webp)$/i, '');
+          const outThumb = baseOut + '-thumb.jpg';
+          const outThumbPath = path.join(thumbsDir, outThumb);
+          const mediumDir = path.join(full, 'medium');
+          await fs.mkdir(mediumDir, { recursive: true });
+          const outMedium = baseOut + '-medium.jpg';
+          const outMediumPath = path.join(mediumDir, outMedium);
           try {
-            let skip = false;
+            let skipThumb = false;
+            let skipMedium = false;
             try {
-              const [sOut, sIn] = await Promise.all([fs.stat(outPath).catch(() => null), fs.stat(inPath)]);
-              if (sOut && sOut.mtimeMs >= sIn.mtimeMs) skip = true;
+              const [sThumb, sMedium, sIn] = await Promise.all([
+                fs.stat(outThumbPath).catch(() => null),
+                fs.stat(outMediumPath).catch(() => null),
+                fs.stat(inPath),
+              ]);
+              if (sThumb && sThumb.mtimeMs >= sIn.mtimeMs) skipThumb = true;
+              if (sMedium && sMedium.mtimeMs >= sIn.mtimeMs) skipMedium = true;
             } catch {}
-            if (skip) continue;
-            await sharp(inPath).resize({ width: 640 }).jpeg({ quality: 70 }).toFile(outPath);
-            console.log('Generated', outPath);
+            if (!skipThumb) {
+              await sharp(inPath).resize({ width: 640 }).jpeg({ quality: 70 }).toFile(outThumbPath);
+              console.log('Generated', outThumbPath);
+            }
+            if (!skipMedium) {
+              await sharp(inPath).resize({ width: 1600 }).jpeg({ quality: 82 }).toFile(outMediumPath);
+              console.log('Generated', outMediumPath);
+            }
           } catch (err) {
             console.error('Thumb error for', inPath, err.message);
           }
