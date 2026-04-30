@@ -7,7 +7,14 @@ import { X } from "lucide-react";
 const meetupImageModules = import.meta.glob("/src/content/images-meetup/meetup-*/[^/]*", {
   query: "?url",
   import: "default",
+  eager: false,
 });
+
+// Thumbnails are generated into a `thumbs/` folder per meetup and can be eagerly imported (small files)
+const meetupThumbModules = import.meta.glob(
+  "/src/content/images-meetup/meetup-*/thumbs/[^/]*",
+  { query: "?url", import: "default", eager: true }
+);
 
 type ImageLoader = () => Promise<string | { default: string }>;
 
@@ -31,6 +38,7 @@ interface Photo {
   filename: string;
   meetupNumber: number;
   loadUrl: ImageLoader;
+  thumbUrl?: string | null;
 }
 
 const resolvedPhotoUrlCache = new Map<string, string>();
@@ -197,20 +205,18 @@ function PhotoItem({
         {/* Skeleton placeholder */}
         {!isLoaded && <SkeletonLoader />}
 
-        {/* Actual image */}
-        {photoUrl && (
-          <img
-            ref={imgRef}
-            src={photoUrl}
-            alt={`${photo.filename}`}
-            loading="lazy"
-            onLoad={() => setIsLoaded(true)}
-            className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 will-change-transform ${
-              isLoaded ? "opacity-100" : "opacity-0"
-            }`}
-            decoding="async"
-          />
-        )}
+        {/* Actual image: prefer resolved full `photoUrl`, fall back to generated thumbnail `photo.thumbUrl` */}
+        <img
+          ref={imgRef}
+          src={photoUrl ?? photo.thumbUrl ?? undefined}
+          alt={`${photo.filename}`}
+          loading="lazy"
+          onLoad={() => setIsLoaded(true)}
+          className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 will-change-transform ${
+            isLoaded ? "opacity-100" : "opacity-0"
+          }`}
+          decoding="async"
+        />
 
         {/* Info overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
@@ -283,11 +289,22 @@ export default function PhotosSection() {
         grouped[meetupNumber] = [];
       }
 
+      // compute expected thumb path produced by our thumbnail generator
+      const baseName = filename.replace(/\.[^/.]+$/, "");
+      const thumbPath = `/src/content/images-meetup/${folderName}/thumbs/${baseName}-thumb.jpg`;
+      const thumbEntry = (meetupThumbModules as Record<string, string | { default: string }>)[thumbPath];
+      const thumbUrl = thumbEntry
+        ? typeof thumbEntry === "string"
+          ? (thumbEntry as string)
+          : (thumbEntry as any).default
+        : null;
+
       grouped[meetupNumber].push({
         key: path,
         filename,
-        meetupNumber,
         loadUrl,
+        meetupNumber,
+        thumbUrl,
       });
     });
 
