@@ -1,6 +1,6 @@
 # BTU Tech Hub Meetup - 22
 
-![BTU Tech Hub Meetup 22 Banner](/src/content/images-meetup/meet-up-22.png)
+![BTU Tech Hub Meetup 22 Banner](/src/content/images-meetup/meetup-22/meetup22_banner.png)
 
 **BTU Tech Hub**
 
