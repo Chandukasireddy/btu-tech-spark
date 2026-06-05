@@ -44,5 +44,3 @@ We are back for our 25th session! While we are finalizing the core technical wor
 ## Hosted By
 
 **Chandrakiran Reddy Kasireddy**
-**Rahul Oruganti**
-**Fharook shaik**
