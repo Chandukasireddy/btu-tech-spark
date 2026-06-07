@@ -21,12 +21,13 @@ export interface CountdownValues {
   seconds: number;
 }
 
-export function useCountdown(): CountdownValues {
+export function useCountdown(targetDate?: Date | null): CountdownValues {
   const [values, setValues] = useState<CountdownValues>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
+    const target = targetDate || getNextSunday14();
+
     function tick() {
-      const target = getNextSunday14();
       const now = new Date();
       const diff = Math.max(0, target.getTime() - now.getTime());
 
@@ -41,7 +42,7 @@ export function useCountdown(): CountdownValues {
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [targetDate]);
 
   return values;
 }
